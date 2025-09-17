@@ -1,0 +1,101 @@
+<%- include('partials/header') %>
+
+<h1>Book Appointment</h1>
+
+<div class="form-container">
+    <div class="card" style="margin-bottom: 2rem; padding: 1rem;">
+        <h2>Selected Doctor</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 style="color: #667eea; margin-bottom: 0.5rem;"><%= doctor.name %></h3>
+                <div class="specialty"><%= doctor.specialty %></div>
+                <div class="rating">⭐ <%= doctor.rating %> • <%= doctor.experience %> experience</div>
+            </div>
+            <div style="text-align: right;">
+                <div>📞 <%= doctor.phone %></div>
+                <div>✉️ <%= doctor.email %></div>
+            </div>
+        </div>
+    </div>
+
+    <form id="bookingForm" action="/book" method="POST">
+        <input type="hidden" name="doctorId" value="<%= doctor.id %>">
+        
+        <h2>Patient Information</h2>
+        
+        <div class="form-group">
+            <label for="patientName">Full Name *</label>
+            <input type="text" id="patientName" name="patientName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="patientEmail">Email Address *</label>
+            <input type="email" id="patientEmail" name="patientEmail" required>
+        </div>
+
+        <div class="form-group">
+            <label for="patientPhone">Phone Number *</label>
+            <input type="tel" id="patientPhone" name="patientPhone" required>
+        </div>
+
+        <h2>Appointment Details</h2>
+
+        <div class="form-group">
+            <label for="date">Preferred Date *</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+            <label>Available Time Slots *</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                <% doctor.availability.forEach(time => { %>
+                    <button type="button" class="time-slot" style="padding: 0.5rem; border: 2px solid #e9ecef; background: white; border-radius: 5px; cursor: pointer; transition: all 0.3s;" onclick="selectTimeSlot(event)"><%= time %></button>
+                <% }) %>
+            </div>
+            <input type="hidden" id="time" name="time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="reason">Reason for Visit</label>
+            <textarea id="reason" name="reason" placeholder="Please describe the reason for your visit (optional)"></textarea>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <button type="submit" class="btn">Book Appointment</button>
+            <a href="/doctors" class="btn btn-secondary" style="margin-left: 1rem;">Back to Doctors</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.time-slot.selected {
+    background: #667eea !important;
+    color: white !important;
+    border-color: #667eea !important;
+}
+
+.time-slot:hover {
+    background: #f8f9fa !important;
+    border-color: #667eea !important;
+}
+</style>
+
+<script>
+function selectTimeSlot(event) {
+    // Remove selection from other time slots
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('selected');
+    });
+    
+    // Add selection to clicked slot
+    event.target.classList.add('selected');
+    
+    // Update hidden input
+    const timeInput = document.getElementById('time');
+    if (timeInput) {
+        timeInput.value = event.target.textContent;
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

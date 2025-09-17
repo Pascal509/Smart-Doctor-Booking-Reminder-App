@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+
+<h1>Find Doctors</h1>
+
+<div class="search-filter">
+    <h2>Search & Filter</h2>
+    <div class="filter-row">
+        <div class="filter-group">
+            <label for="searchInput">Search by name or specialty:</label>
+            <input type="text" id="searchInput" placeholder="Enter doctor name or specialty...">
+        </div>
+        <div class="filter-group">
+            <label for="specialtyFilter">Filter by specialty:</label>
+            <select id="specialtyFilter">
+                <option value="all" <%= selectedSpecialty === 'all' ? 'selected' : '' %>>All Specialties</option>
+                <option value="cardiology" <%= selectedSpecialty === 'cardiology' ? 'selected' : '' %>>Cardiology</option>
+                <option value="pediatrics" <%= selectedSpecialty === 'pediatrics' ? 'selected' : '' %>>Pediatrics</option>
+                <option value="dermatology" <%= selectedSpecialty === 'dermatology' ? 'selected' : '' %>>Dermatology</option>
+                <option value="general" <%= selectedSpecialty === 'general' ? 'selected' : '' %>>General Practice</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="doctor-grid">
+    <% doctors.forEach(doctor => { %>
+        <div class="doctor-card card">
+            <div class="doctor-info">
+                <h3><%= doctor.name %></h3>
+                <div class="specialty"><%= doctor.specialty %></div>
+                <div class="rating">⭐ <%= doctor.rating %> • <%= doctor.experience %> experience</div>
+                <div class="contact-info">
+                    <div>📞 <%= doctor.phone %></div>
+                    <div>✉️ <%= doctor.email %></div>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <strong>Available Times:</strong>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                        <% doctor.availability.forEach(time => { %>
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.8rem;"><%= time %></span>
+                        <% }) %>
+                    </div>
+                </div>
+                <a href="/book/<%= doctor.id %>" class="btn" style="margin-top: 1rem; display: inline-block;">Book Appointment</a>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+<% if (doctors.length === 0) { %>
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <h2>No doctors found</h2>
+        <p>No doctors match your current search criteria. Please try adjusting your filters.</p>
+        <a href="/doctors" class="btn">View All Doctors</a>
+    </div>
+<% } %>
+
+<%- include('partials/footer') %>

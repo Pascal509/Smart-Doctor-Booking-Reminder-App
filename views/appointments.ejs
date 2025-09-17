@@ -1,0 +1,196 @@
+<%- include('partials/header') %>
+
+<h1>My Appointments</h1>
+
+<% if (appointments.length === 0) { %>
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <h2>No appointments found</h2>
+        <p>You don't have any appointments scheduled yet.</p>
+        <a href="/doctors" class="btn">Book Your First Appointment</a>
+    </div>
+<% } else { %>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Specialty</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% appointments.forEach(appointment => { %>
+                    <tr>
+                        <td>
+                            <strong><%= appointment.doctorName %></strong>
+                        </td>
+                        <td>
+                            <div>
+                                <strong><%= appointment.patientName %></strong><br>
+                                <small style="color: #666;">
+                                    <%= appointment.patientEmail %><br>
+                                    <%= appointment.patientPhone %>
+                                </small>
+                            </div>
+                        </td>
+                        <td>
+                            <%= new Date(appointment.date).toLocaleDateString('en-US', { 
+                                weekday: 'short',
+                                month: 'short', 
+                                day: 'numeric',
+                                year: 'numeric'
+                            }) %>
+                        </td>
+                        <td><%= appointment.time %></td>
+                        <td>
+                            <% 
+                                const doctor = doctors?.find(d => d.id === appointment.doctorId);
+                                const specialty = doctor ? doctor.specialty : 'N/A';
+                            %>
+                            <%= specialty %>
+                        </td>
+                        <td>
+                            <% if (appointment.reason) { %>
+                                <%= appointment.reason.length > 50 ? appointment.reason.substring(0, 50) + '...' : appointment.reason %>
+                            <% } else { %>
+                                <em>No reason provided</em>
+                            <% } %>
+                        </td>
+                        <td>
+                            <span class="status-<%= appointment.status %>">
+                                <%= appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) %>
+                            </span>
+                        </td>
+                        <td>
+                            <% if (appointment.status === 'confirmed') { %>
+                                <button 
+                                    class="btn btn-danger btn-small cancel-appointment" 
+                                    data-appointment-id="<%= appointment.id %>"
+                                    data-patient-name="<%= appointment.patientName %>">
+                                    Cancel
+                                </button>
+                            <% } else { %>
+                                <span style="color: #666; font-style: italic;">No actions</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 2rem; text-align: center;">
+        <p style="color: #666; margin-bottom: 1rem;">
+            Total Appointments: <%= appointments.length %> | 
+            Confirmed: <%= appointments.filter(a => a.status === 'confirmed').length %> | 
+            Cancelled: <%= appointments.filter(a => a.status === 'cancelled').length %>
+        </p>
+    </div>
+<% } %>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="/doctors" class="btn">Book New Appointment</a>
+    <a href="/" class="btn btn-secondary" style="margin-left: 1rem;">Back to Home</a>
+</div>
+
+<script>
+// Add event listeners for cancel buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const cancelButtons = document.querySelectorAll('.cancel-appointment');
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', handleCancelAppointment);
+    });
+});
+
+function handleCancelAppointment(event) {
+    event.preventDefault();
+    
+    const appointmentId = event.target.dataset.appointmentId;
+    const patientName = event.target.dataset.patientName;
+    
+    if (confirm(`Are you sure you want to cancel the appointment for ${patientName}?`)) {
+        cancelAppointment(appointmentId, event.target);
+    }
+}
+
+async function cancelAppointment(appointmentId, button) {
+    try {
+        // Show loading state
+        const originalText = button.textContent;
+        button.innerHTML = '<span class="loading"></span> Cancelling...';
+        button.disabled = true;
+        
+        const response = await fetch(`/api/appointments/${appointmentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            // Remove the appointment row
+            const row = button.closest('tr');
+            if (row) {
+                row.style.transition = 'opacity 0.3s';
+                row.style.opacity = '0';
+                setTimeout(() => {
+                    row.remove();
+                    
+                    // Check if table is now empty
+                    const remainingRows = document.querySelectorAll('tbody tr');
+                    if (remainingRows.length === 0) {
+                        location.reload(); // Reload to show empty state
+                    }
+                }, 300);
+            }
+            
+            showAlert('Appointment cancelled successfully', 'success');
+        } else {
+            throw new Error('Failed to cancel appointment');
+        }
+    } catch (error) {
+        console.error('Error cancelling appointment:', error);
+        showAlert('Failed to cancel appointment. Please try again.', 'error');
+        
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+}
+
+function showAlert(message, type = 'info') {
+    // Remove existing alerts
+    document.querySelectorAll('.alert').forEach(alert => {
+        alert.remove();
+    });
+    
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type === 'error' ? 'error' : 'success'}`;
+    alert.textContent = message;
+    
+    // Insert at the top of the main content
+    const main = document.querySelector('main');
+    if (main) {
+        const container = main.querySelector('.container');
+        container.insertBefore(alert, container.firstChild);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.style.transition = 'opacity 0.3s';
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }
+        }, 5000);
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

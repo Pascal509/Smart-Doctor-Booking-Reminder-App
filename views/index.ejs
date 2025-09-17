@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<div class="hero">
+    <h1>Welcome to Smart Doctor Booking</h1>
+    <p>Find and schedule medical appointments with ease. Our platform connects you with qualified healthcare professionals in your area.</p>
+    <a href="/doctors" class="btn">Find Doctors</a>
+</div>
+
+<div class="card">
+    <h2>Featured Doctors</h2>
+    <div class="doctor-grid">
+        <% doctors.slice(0, 3).forEach(doctor => { %>
+            <div class="doctor-card card">
+                <div class="doctor-info">
+                    <h3><%= doctor.name %></h3>
+                    <div class="specialty"><%= doctor.specialty %></div>
+                    <div class="rating">⭐ <%= doctor.rating %> • <%= doctor.experience %> experience</div>
+                    <div class="contact-info">
+                        <div>📞 <%= doctor.phone %></div>
+                        <div>✉️ <%= doctor.email %></div>
+                    </div>
+                    <a href="/book/<%= doctor.id %>" class="btn btn-small">Book Appointment</a>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Why Choose Smart Doctor Booking?</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1rem;">
+        <div>
+            <h3>🔍 Easy Search</h3>
+            <p>Find doctors by specialty, location, and availability with our intuitive search system.</p>
+        </div>
+        <div>
+            <h3>📅 Quick Booking</h3>
+            <p>Book appointments in just a few clicks. No phone calls or long waiting times required.</p>
+        </div>
+        <div>
+            <h3>🔔 Smart Reminders</h3>
+            <p>Receive automatic reminders before your appointments so you never miss an important visit.</p>
+        </div>
+        <div>
+            <h3>👩‍⚕️ Qualified Doctors</h3>
+            <p>All doctors on our platform are verified and experienced healthcare professionals.</p>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

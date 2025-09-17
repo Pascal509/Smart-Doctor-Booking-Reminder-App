@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+
+<div class="card" style="text-align: center; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border: 2px solid #28a745;">
+    <h1 style="color: #155724;">✅ Appointment Confirmed!</h1>
+    <p style="font-size: 1.2rem; color: #155724; margin-bottom: 2rem;">Your appointment has been successfully booked.</p>
+</div>
+
+<div class="card">
+    <h2>Appointment Details</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1rem;">
+        <div>
+            <h3>Patient Information</h3>
+            <div style="margin-top: 1rem;">
+                <strong>Name:</strong> <%= appointment.patientName %><br>
+                <strong>Email:</strong> <%= appointment.patientEmail %><br>
+                <strong>Phone:</strong> <%= appointment.patientPhone %>
+            </div>
+        </div>
+        
+        <div>
+            <h3>Doctor Information</h3>
+            <div style="margin-top: 1rem;">
+                <strong>Doctor:</strong> <%= doctor.name %><br>
+                <strong>Specialty:</strong> <%= doctor.specialty %><br>
+                <strong>Phone:</strong> <%= doctor.phone %><br>
+                <strong>Email:</strong> <%= doctor.email %>
+            </div>
+        </div>
+        
+        <div>
+            <h3>Appointment Schedule</h3>
+            <div style="margin-top: 1rem;">
+                <strong>Date:</strong> <%= new Date(appointment.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %><br>
+                <strong>Time:</strong> <%= appointment.time %><br>
+                <strong>Status:</strong> <span class="status-confirmed">Confirmed</span>
+            </div>
+        </div>
+    </div>
+    
+    <% if (appointment.reason) { %>
+        <div style="margin-top: 2rem;">
+            <h3>Reason for Visit</h3>
+            <p style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-top: 0.5rem;"><%= appointment.reason %></p>
+        </div>
+    <% } %>
+</div>
+
+<div class="card">
+    <h2>Important Information</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 1rem;">
+        <div>
+            <h3>🔔 Reminders</h3>
+            <p>You will receive a reminder notification 24 hours before your appointment.</p>
+        </div>
+        
+        <div>
+            <h3>📋 What to Bring</h3>
+            <ul style="margin-top: 0.5rem;">
+                <li>Valid ID</li>
+                <li>Insurance card</li>
+                <li>List of current medications</li>
+                <li>Previous medical records (if applicable)</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h3>⏰ Arrival Time</h3>
+            <p>Please arrive 15 minutes early for check-in and paperwork.</p>
+        </div>
+        
+        <div>
+            <h3>📞 Need Changes?</h3>
+            <p>Contact the doctor's office at <%= doctor.phone %> if you need to reschedule or cancel.</p>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="/appointments" class="btn">View All Appointments</a>
+    <a href="/doctors" class="btn btn-secondary" style="margin-left: 1rem;">Book Another Appointment</a>
+    <a href="/" class="btn btn-secondary" style="margin-left: 1rem;">Back to Home</a>
+</div>
+
+<%- include('partials/footer') %>
