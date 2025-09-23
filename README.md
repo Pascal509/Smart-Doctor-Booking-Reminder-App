@@ -1,58 +1,90 @@
-Smart Doctor-Booking & Reminder App
+Smart Doctor-Booking & Reminder App: Capstone Project
+
 🔖 Project Title & Description
-The Smart Doctor-Booking & Reminder App is an innovative platform designed to simplify the process of finding and scheduling medical appointments.
+The Smart Doctor-Booking & Reminder App is a high-performance platform designed to revolutionize how patients find specialists and manage their appointments.
 
-Problem Solved: Patients often struggle with finding the right specialist quickly and frequently miss appointments due to poor reminder systems.
+Core Problem: Inefficiency in appointment scheduling, patient drop-off due to difficulty finding the right specialist, and high no-show rates.
 
-Solution: This application uses a lightweight AI-powered symptom classifier to instantly recommend suitable doctors or clinics based on natural language input (e.g., "earache," "stomach flu"). It pairs this with a robust appointment management system featuring automated, multi-channel (SMS/Email) reminders.
+Solution: We are building a robust, high-concurrency backend (Golang) and a modern frontend (React) connected by a core AI-powered symptom-to-specialist classifier. The app provides smart doctor suggestions and multi-channel reminders (SMS/Email) to maximize booking efficiency and patient compliance.
 
-Target Audience: Healthcare providers looking to optimize their schedules and patients seeking a seamless, reliable way to manage their health appointments.
+Target Audience: Mid-to-large medical clinics and hospitals seeking to digitize and optimize their patient intake and scheduling processes.
 
 🛠️ Tech Stack
-This project is built as a modern, decoupled web application using a specialized stack to support both rapid development and AI integration.
+This project leverages a performant, scalable stack, integrating Python specifically for the AI/ML layer.
 
-Component	Technology	Role
-Frontend	React (Vite)	Component-based UI for a smooth user experience.
-Styling	Tailwind CSS	Utility-first framework for rapid and responsive design.
-Backend (API)	Python (Flask)	Lightweight API to handle business logic and connect to the AI model.
-Database	PostgreSQL	Reliable, structured data storage for users, doctors, and appointments.
-AI/ML	Scikit-learn / Custom Rules	Symptom-to-specialty classification and doctor suggestion.
-Messaging	Twilio	SMS integration for critical appointment reminders.
+Component	Technology	Rationale
+Frontend	React (Vite) / Tailwind CSS	Fast development, component-based UI, and modern styling.
+Backend (API)	Golang (Gin or Echo Framework)	High performance, excellent concurrency, and small binary size for a reliable API.
+AI/ML Layer	Python (Scikit-learn)	Dedicated service for the lightweight symptom classification model.
+Database	PostgreSQL	Reliable, feature-rich relational DB for structured appointment and user data.
+Database ORM	GORM or SQLC	Idiomatic Golang interaction with PostgreSQL.
+Messaging	Twilio	Industry-standard for programmatic SMS reminders.
+AI-Assisted Dev	Cursor / GitHub Copilot / CodeRabbit	In-IDE assistance, automated PR reviews, and schema-aware generation.
+🧠 AI Integration Strategy: AI-Assisted Development
+This capstone project emphasizes using AI as a force multiplier throughout the entire development process, focusing on the principles of Context Injection and Guardrails (as seen in the provided image).
 
-Export to Sheets
-🧠 AI Integration Strategy
-We are using AI not just for the application's core feature (symptom classification) but also as a powerful partner in the entire development lifecycle to maximize efficiency and code quality.
+1. 🧱 Code or Feature Generation (Scaffolding)
+We will use in-IDE tooling (e.g., Cursor or Copilot) to generate boilerplate and functions, saving significant time.
 
-1. Code Generation
-Our primary strategy for scaffolding features involves leveraging AI to quickly produce boilerplate and repetitive code blocks:
+Task	AI Strategy & Prompt Example
+API Scaffolding (Golang)	Strategy: Generate the full HTTP handlers, model structs, and basic routing using the Echo or Gin framework.
+Prompt: "Using the Golang Echo framework and the GORM ORM, generate the full CRUD handlers (Create, GetByID, GetAll, Delete) for a Doctor resource. The Doctor struct has fields: ID (int), Name (string), SpecialtyID (int), and is_active (bool)."
+Frontend Component	Strategy: Generate complex React components with required state/props.
+Prompt: "Generate a TypeScript React component called AppointmentCard that accepts doctorName and appointmentTime as props. It must use Tailwind CSS for styling and include a stateful 'Cancel Appointment' button."
+2. 🧪 Testing Support
+AI will be used to ensure every critical piece of business logic is covered by a test suite.
 
-Scaffolding: Using the in-editor AI tool (e.g., Cursor or Zed), we will generate React functional components by describing their required state and props.
+Task	AI Strategy & Prompt Example
+Unit Tests (Golang)	Strategy: Provide the Go function and ask for a complete test suite to cover various inputs and error paths.
+Prompt: "Generate a complete testing package test suite for the ScheduleReminder(appointmentTime time.Time) Go function. Ensure tests cover successful scheduling, a scenario where the time is in the past (returning an error), and a scenario where the time is exactly now."
+Mocking Integration	Strategy: Generate the necessary boilerplate for mocking external dependencies (e.g., the database or the Twilio service).
+Prompt: "Generate the mock implementation for the AppointmentRepository interface using GoMock, so I can test the CreateAppointment service layer without hitting the PostgreSQL database."
+3. 📝 Documentation
+AI ensures documentation is consistent, professional, and up-to-date across the codebase and external files.
 
-API Routes: We will prompt the AI to generate Flask route skeletons (e.g., GET, POST, PUT endpoints) for data models like Appointment and Doctor, including basic JSON parsing and database connection placeholders.
+Task	AI Strategy & Prompt Example
+Internal Documentation	Strategy: Automatically generate and maintain correct Go documentation (Godoc) for all exported functions and structs.
+Prompt: "Write a concise Godoc comment for the BookAppointment function, explaining its parameters (userID, doctorID, time) and what it returns (Appointment struct, error), emphasizing its use of a database transaction."
+README & Wiki	Strategy: Update external documentation based on project changes (e.g., when the AI classifier is updated).
+Prompt: "Based on the latest Git diff which shows the symptom classifier moving from simple rules to a Scikit-learn model, update the 'AI Integration Strategy' section of the README to reflect this change."
+4. Context-Aware Techniques (Schema-Aware & Architecture)
+This is the most critical area, leveraging AI as a schema-aware and architecture-aware teammate.
 
-Data Access Objects (DAOs): AI will generate the basic SQLAlchemy CRUD (Create, Read, Update, Delete) helper functions based on the defined database model schemas.
+Technique	Implementation Details	AI Tooling Integration
+Schema-Aware Coding	We will feed the AI the PostgreSQL schema and the Golang Structs (e.g., Doctor, Appointment) to generate: 1. Data validation logic. 2. Safe, prepared SQL queries if using SQLC.	Prompt: "Given the Appointment GORM struct, generate a Golang function that fetches all appointments for a given userID, ensuring the query only selects appointments that have a status of 'SCHEDULED' and orders them by time ascending."
+Automated Reviews	We will integrate CodeRabbit (or similar tool) into the GitHub workflow. This adheres to the "Automate Pull Requests" principle from the guide.	Action: The tool will run on every PR, focusing on Golang best practices (e.g., error handling, interface use) and potential security flaws in the generated API code. It will leave inline, actionable comments.
+Creating Reusable Project Rules	We will explicitly define the project's Go idioms (e.g., all database access must go through a dedicated Repository interface) and save them as a custom instruction file (.cursor/project-spec.md).	Action: This file will be loaded by the in-IDE AI, forcing it to generate code that follows our repository pattern and architecture, making it behave like a "teammate, not a generic chatbot."
+Refactor with Guardrails	When refactoring a large block of business logic (e.g., reminder scheduling), we will use specific prompts to limit the scope of change.	Prompt: "Refactor this SendReminder function to use a channel for concurrency, but DO NOT alter the external TwilioClient interface, only modify the internal loop logic."
 
-2. Testing Support
-AI will be used to ensure high test coverage and minimize manual test writing time:
+## 🚀 Features Implemented
 
-Unit Tests: We will feed the AI agent Python functions (e.g., data validation, reminder scheduling logic) and prompt it to generate comprehensive Pytest unit tests covering edge cases and expected success scenarios.
+The following API endpoints have been fully integrated with the frontend application:
 
-Integration Tests: For critical API endpoints (e.g., booking an appointment), we will use AI to generate integration tests that mock the HTTP requests and verify correct database interactions.
+### Authentication Endpoints
+- **POST /api/v1/auth/login** - User authentication with JWT token generation and full form validation
+- **POST /api/v1/auth/validate** - JWT token validation for protected routes
+- **POST /api/v1/auth/logout** - Secure user logout with token invalidation
 
-Test-Driven Prompts: We will sometimes prompt the AI to "Write the implementation for this function based on the following test suite," practicing a prompt-driven TDD approach.
+### Doctor Management Endpoints
+- **GET /api/v1/doctors** - Retrieve all active doctors with specialty information
+- **GET /api/v1/doctors/:id** - Get specific doctor details by ID
+- **POST /api/v1/doctors** - Create new doctor profiles with validation
+- **PUT /api/v1/doctors/:id** - Update existing doctor information
+- **DELETE /api/v1/doctors/:id** - Soft delete doctor profiles
 
-3. Documentation
-Maintaining clear, consistent documentation is critical and will be supported by AI:
+### Appointment Management Endpoints
+- **POST /api/v1/appointments/book** - Book new appointments with full form validation and success handling
+- **GET /api/v1/appointments/availability** - Check doctor availability for specific time slots
+- **PUT /api/v1/appointments/:id/reschedule** - Reschedule existing appointments with conflict detection
+- **DELETE /api/v1/appointments/:id/cancel** - Cancel appointments with reason tracking
+- **GET /api/v1/appointments/user/:user_id** - Retrieve user's appointment history
 
-Docstrings and Comments: The AI will be used to generate clear, standardized docstrings for all Python functions and React components. We will enforce a style standard (e.g., Google or NumPy style) through the prompt.
+### System Health Endpoints
+- **GET /health** - Application health check with database connectivity status
 
-README and Wiki Maintenance: The AI agent will assist in automatically updating the README.md's Tech Stack section or generating Wiki pages based on new feature additions by analyzing Git diffs and commit messages.
-
-4. Context-Aware Techniques
-To ensure the AI generates code and documentation that is relevant and correct, we will provide specific context:
-
-Schema Integration: We will feed the AI the full SQLAlchemy model definitions (e.g., User, Doctor) and the OpenAPI specification to generate tightly-coupled API validation logic (using Marshmallow or Pydantic) and corresponding frontend types.
-
-File Tree Awareness: When generating new files (e.g., a new component or utility), we will often provide the local file tree structure in the prompt to ensure the AI uses the correct relative paths and imports.
-
-PR/Diff Review: In the pull request process, an AI tool will be fed the Git diff to summarize changes, suggest optimizations, and point out potential security flaws or style guide violations before a human review.
+All endpoints include:
+- Comprehensive error handling and validation
+- Rate limiting and security middleware
+- CORS configuration for frontend integration
+- Structured JSON responses with consistent error formats
+- TypeScript interface definitions for type-safe frontend integration
