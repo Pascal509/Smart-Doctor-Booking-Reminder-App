@@ -1,5 +1,6 @@
 package routes
 
+// import neccessary dependencies and modules
 import (
 	"os"
 	"strconv"
@@ -135,9 +136,9 @@ func SetupRoutes(db *gorm.DB) *gin.Engine {
 		doctors.Use(middleware.AuthMiddleware()) // Apply auth middleware to all doctor routes
 		{
 			doctors.POST("", doctorHandler.CreateDoctor)       // POST /api/v1/doctors
-			doctors.GET("/:id", doctorHandler.GetDoctor)     // GET /api/v1/doctors/:id
-			doctors.GET("", doctorHandler.GetAllDoctors)     // GET /api/v1/doctors
-			doctors.PUT("/:id", doctorHandler.UpdateDoctor)  // PUT /api/v1/doctors/:id
+			doctors.GET("/:id", doctorHandler.GetDoctor)       // GET /api/v1/doctors/:id
+			doctors.GET("", doctorHandler.GetAllDoctors)       // GET /api/v1/doctors
+			doctors.PUT("/:id", doctorHandler.UpdateDoctor)    // PUT /api/v1/doctors/:id
 			doctors.DELETE("/:id", doctorHandler.DeleteDoctor) // DELETE /api/v1/doctors/:id
 		}
 
